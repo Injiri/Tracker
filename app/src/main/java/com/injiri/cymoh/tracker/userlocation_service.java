@@ -1,6 +1,7 @@
 package com.injiri.cymoh.tracker;
 
 import android.Manifest;
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -29,6 +30,7 @@ import static android.support.constraint.Constraints.TAG;
 public class userlocation_service extends Service {
     public userlocation_service() {
     }
+    public  static final  String NOTIFICATION= "com.injiri.cymoh.Service.reciever";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -65,5 +67,9 @@ public class userlocation_service extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentTitle(getString(R.string.app_name)).setContentText(getString(R.string.notification_text)).setOngoing(true
         ).setContentIntent(broadcastIntent).setSmallIcon(R.drawable.ic_tracker);
         startForeground(1,builder.build());
+    }
+    public void publishcurrentLocation(ArrayList raw_location){
+        Intent intent= new Intent(NOTIFICATION);
+        intent.putExtra("",raw_location);
     }
 }
