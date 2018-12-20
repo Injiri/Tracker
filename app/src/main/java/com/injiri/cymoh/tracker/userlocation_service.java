@@ -1,8 +1,6 @@
 package com.injiri.cymoh.tracker;
 
 import android.Manifest;
-import android.app.IntentService;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -11,41 +9,69 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.injiri.cymoh.tracker.tracker_settings.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.support.constraint.Constraints.TAG;
 
-public class userlocation_service extends Service {
+public class userlocation_service extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public userlocation_service() {
     }
+
+    public static String LOCATION_BROADCAST_ACTION = userlocation_service.class.getName() + "locationBroadcast";
+    public static String USER_LATITUDE = "extra_lat";
+    public static String USER_LONGITUDE = "extra_lng";
     public  static final  String NOTIFICATION= "com.injiri.cymoh.Service.reciever";
+
+    private static String TAG = userlocation_service.class.getSimpleName();
+    GoogleApiClient myLocationClient;
+    LocationRequest myLocationRequest = new LocationRequest();
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        myLocationClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+        myLocationRequest.setInterval(Constants.UPDATES_INTERVAL);
+        myLocationRequest.setFastestInterval(Constants.FASTEST_LOCATION_INTERVAL);
+        int priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
+        myLocationRequest.setPriority(priority);
+        myLocationClient.connect();
+        //make the service less prone to system stops
+        return START_STICKY;
+
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+
     public  void requestLocationUpdater(){
         LocationRequest request= new LocationRequest();
         request.setInterval(1000);
         request.setFastestInterval(500);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setSmallestDisplacement(75.0F);
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
         int permission = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
-
-
 
 
     }
@@ -68,8 +94,57 @@ public class userlocation_service extends Service {
         ).setContentIntent(broadcastIntent).setSmallIcon(R.drawable.ic_tracker);
         startForeground(1,builder.build());
     }
-    public void publishcurrentLocation(ArrayList raw_location){
-        Intent intent= new Intent(NOTIFICATION);
-        intent.putExtra("",raw_location);
+
+    public void publishcurrentLocation(String lat, String lng) {
+        Log.d(TAG, "sending location_info...");
+        Intent intent = new Intent(LOCATION_BROADCAST_ACTION);
+        intent.putExtra(USER_LATITUDE, lat);
+        intent.putExtra(USER_LONGITUDE, lng);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "Location has changed");
+        if (location != null) {
+            Log.d(TAG, "Location != null");
+            //broadcast the location result to the other classes listening to the service
+            publishcurrentLocation(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "==onConnected permission not  granded");
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(myLocationClient, myLocationRequest, (com.google.android.gms.location.LocationListener) this);
+        Log.d(TAG, "connected to ggle api");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "Connection has been susppendded");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "sorry connection to google api failed");
     }
 }
