@@ -4,7 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".contactus">
-
+    <!--<Spinner android:text="@string/device_spinner"-->
+    <!--android:id="@+id/devices"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:visibility="gone" />-->
     <!-- TODO: Update blank fragment layout -->
     <fragment
         xmlns:tools="http://schemas.android.com/tools"

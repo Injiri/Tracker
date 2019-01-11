@@ -9,7 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
+
+import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -26,11 +27,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.injiri.cymoh.tracker.tracker_settings.Constants;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class userlocation_service extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public userlocation_service() {
@@ -65,16 +61,6 @@ public class userlocation_service extends Service implements GoogleApiClient.Con
     }
 
 
-    public  void requestLocationUpdater(){
-        LocationRequest request= new LocationRequest();
-        request.setInterval(1000);
-        request.setFastestInterval(500);
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY).setSmallestDisplacement(75.0F);
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
-        int permission = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
-
-
-    }
    public BroadcastReceiver stopReciever= new BroadcastReceiver() {
        @Override
        public void onReceive(Context context, Intent intent) {
@@ -114,27 +100,12 @@ public class userlocation_service extends Service implements GoogleApiClient.Con
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "==onConnected permission not  granded");
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(myLocationClient, myLocationRequest, (com.google.android.gms.location.LocationListener) this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(myLocationClient, myLocationRequest, this);
         Log.d(TAG, "connected to ggle api");
     }
 

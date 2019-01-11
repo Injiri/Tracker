@@ -14,4 +14,5 @@
     <string name="rationale_permission">Please grant location permission to start the service</string>
     <string name="deniedpermission_exp">location permission denied.</string>
     <string name="settings">settings</string>
+    <string name="device_spinner">select a device</string>
 </resources>
