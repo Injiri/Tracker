@@ -1,4 +1,4 @@
-package com.injiri.cymoh.tracker.tracker_settings;
+package com.injiri.cymoh.tracker;
 
 
 import android.os.Bundle;
