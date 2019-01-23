@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#62def8"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected Device details"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/device_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device id" />
+
+    <TextView
+        android:id="@+id/device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device name" />
+
+    <TextView
+        android:id="@+id/geolimit_radius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geo radius" />
+
+    <TextView
+        android:id="@+id/device_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device Location" />
+
+    <TextView
+        android:id="@+id/last_updateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last Updated" />
+
+
+</LinearLayout>

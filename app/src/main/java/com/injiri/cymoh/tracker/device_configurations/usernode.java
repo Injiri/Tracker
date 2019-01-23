@@ -2,6 +2,7 @@ package com.injiri.cymoh.tracker.device_configurations;
 
 import java.util.ArrayList;
 
+
 public class usernode {
     private String userMail;
     private String password;
@@ -11,6 +12,9 @@ public class usernode {
         this.userMail = userMail;
         this.password = password;
         this.devices = devices;
+    }
+
+    public usernode() {
     }
 
     public String getuserMail() {

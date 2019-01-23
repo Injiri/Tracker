@@ -4,12 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".contactus">
-    <!--<Spinner android:text="@string/device_spinner"-->
-    <!--android:id="@+id/devices"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:visibility="gone" />-->
-    <!-- TODO: Update blank fragment layout -->
     <fragment
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/contactus_map"
@@ -17,5 +11,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:background="#ffffff"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        android:padding="3dp"
+        android:layout_centerHorizontal="true">
+        <Spinner
+            android:id="@+id/devices_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            tools:context=".MapsActivity" />
+
+        <ImageView
+            android:id="@+id/details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:background="#ffffff"
+            android:src="@drawable/ic_deviceinfo" />
+        <ImageView
+            android:id="@+id/edit_deviceinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:background="#ffffff"
+            android:src="@drawable/ic_editdeviceinfo" />
+
+    </LinearLayout>
+
 
 </FrameLayout>

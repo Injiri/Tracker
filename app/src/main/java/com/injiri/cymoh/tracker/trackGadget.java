@@ -17,14 +17,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.injiri.cymoh.tracker.device_configurations.Device;
 import com.injiri.cymoh.tracker.tracker_settings.DataParser;
 
@@ -48,10 +52,15 @@ public class trackGadget extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
+    DatabaseReference databaseReference;
+    FirebaseDatabase firebaseDatabase;
+    TextView deviceIdTxt,deviceNameTxt,geolimitText,deviceLocationTxt,lastUpdateTxt;
+    private HashMap<String,Marker> markers = new HashMap<String,Marker>();
+
+
     public trackGadget() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,43 +74,6 @@ public class trackGadget extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.contactus_map);
         mapFragment.getMapAsync(this);
-//        public void onClick(View clicked){
-//            if(clicked.getId() == R.id.Attack){
-//                Spinner spinner = (Spinner) findViewById(R.id.UseItem);
-//
-//                //Sample String ArrayList
-//                ArrayList<String> arrayList1 = new ArrayList<String>();
-//
-//                arrayList1.add("Bangalore");
-//                arrayList1.add("Delhi");
-//                arrayList1.add("Mumbai");
-//                ArrayAdapter<String> adp = new ArrayAdapter<String> (this,android.R.layout.devices,arrayList1);
-//                spinner.setAdapter(adp);
-//
-//                spinner.setVisibility(View.VISIBLE);
-//                //Set listener Called when the item is selected in spinner
-//                spinner.setOnItemSelectedListener(new OnItemSelectedListener()
-//                {
-//                    public void onItemSelected(AdapterView<?> parent, View view,
-//                                               int position, long arg3)
-//                    {
-//                        String city = "The city is " + parent.getItemAtPosition(position).toString();
-//                        Toast.makeText(parent.getContext(), city, Toast.LENGTH_LONG).show();
-//
-//                    }
-//
-//                    public void onNothingSelected(AdapterView<?> arg0)
-//                    {
-//                        // TODO Auto-generated method stub
-//                    }
-//                });
-//
-//                //BattleRun.dismiss();
-//                Log.d("Item","Clicked");
-//
-//            }
-//        }
-
     }
 
     @Override
@@ -305,44 +277,25 @@ public double distance(Location userLocation, Location deviceLocation){
             }
         }
     }
-//    databaseReference = firebaseDatabase.getReference("Accounts/val-235353");
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//        @Override
-//        public void onDataChange(DataSnapshot dataSnapshot) {
-//            if (dataSnapshot != null) {
-//
-//                onLocationChangeUpdater(dataSnapshot.getValue(userNode.class));
-//            } else {
-//                Toast.makeText(getApplicationContext(), "user Mail/Password Invalid", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//
-//        @Override
-//        public void onCancelled(DatabaseError databaseError) {
-//            Toast.makeText(getApplicationContext(), "Something fishy happened! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-//        }
-//    });
 
     public void u_mapui(final Device device) {
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                double l = device.getDeviceLat();
-                String lat = intent.getStringExtra(userlocation_service.USER_LATITUDE);
-                String lng = intent.getStringExtra(userlocation_service.USER_LONGITUDE);
-                if (lat != null && lng != null) {
-                    LatLng user_latlon = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
+
+                String user_lat = intent.getStringExtra(userlocation_service.USER_LATITUDE);
+                String user_lng = intent.getStringExtra(userlocation_service.USER_LONGITUDE);
+                if (user_lat != null && user_lng != null) {
+                    LatLng user_latlng = new LatLng(Double.valueOf(user_lat), Double.valueOf(user_lng));
                     MarkerOptions option = new MarkerOptions();
-                    option.position(user_latlon).title("DSC_MMUST ,kakamega-Kenya");
+                    option.position(user_latlng).title("DSC_MMUST ,kakamega-Kenya");
                     map.clear();
                     map.addMarker(option);
 
-
-
                     Location userLocation = new Location("DSC");
-                    userLocation.setLatitude(device.getOwnerLatitude());
-                    userLocation.setLongitude(device.getOwnerLongitude());
+                    userLocation.setLatitude(user_latlng.latitude);
+                    userLocation.setLongitude(user_latlng.longitude);
 
                     Location deviceLocation = new Location("DSC_IOT");
                     deviceLocation.setLatitude(device.getDeviceLat());
@@ -351,9 +304,12 @@ public double distance(Location userLocation, Location deviceLocation){
 
 
                     map.addMarker(new MarkerOptions().position(device_latlng).title("device "));
+                    Marker mark =map.addMarker(new MarkerOptions().position(device_latlng).title("device "));
 
-                    map.moveCamera(CameraUpdateFactory.newLatLng(user_latlon));
-                    map.animateCamera(CameraUpdateFactory.newLatLng(user_latlon));
+                    markers.put(device.getDeviceId(), mark);
+
+
+                    map.moveCamera(CameraUpdateFactory.newLatLng(user_latlng));
                     map.animateCamera(CameraUpdateFactory.zoomTo(14
 
                     ));
@@ -361,7 +317,7 @@ public double distance(Location userLocation, Location deviceLocation){
                     double distance = distance(userLocation,deviceLocation);
 
                     // Getting URL to the Google Directions API
-                    String url = getUrl(user_latlon, device_latlng);
+                    String url = getUrl(user_latlng, device_latlng);
                     Log.d("onMapClick", url.toString());
                     trackGadget.FetchUrl FetchUrl = new trackGadget.FetchUrl();
 

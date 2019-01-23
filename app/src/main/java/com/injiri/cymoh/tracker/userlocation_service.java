@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 
 import com.google.android.gms.location.LocationListener;
+
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -35,7 +36,6 @@ public class userlocation_service extends Service implements GoogleApiClient.Con
     public static String LOCATION_BROADCAST_ACTION = userlocation_service.class.getName() + "locationBroadcast";
     public static String USER_LATITUDE = "extra_lat";
     public static String USER_LONGITUDE = "extra_lng";
-    public  static final  String NOTIFICATION= "com.injiri.cymoh.Service.reciever";
 
     private static String TAG = userlocation_service.class.getSimpleName();
     GoogleApiClient myLocationClient;
@@ -61,24 +61,24 @@ public class userlocation_service extends Service implements GoogleApiClient.Con
     }
 
 
-   public BroadcastReceiver stopReciever= new BroadcastReceiver() {
-       @Override
-       public void onReceive(Context context, Intent intent) {
-           Log.d(TAG,"Recieved stop broadcast");
-           //stop the service when the notification is taped
-           unregisterReceiver(stopReciever);
-           stopSelf();
-       }
-   };
+    public BroadcastReceiver stopReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Recieved stop broadcast");
+            //stop the service when the notification is taped
+            unregisterReceiver(stopReciever);
+            stopSelf();
+        }
+    };
 
-    public void buildNotification(){
-        String stop="stop";
-        registerReceiver(stopReciever,new IntentFilter(stop));
-        PendingIntent broadcastIntent= PendingIntent.getBroadcast(this,0,new Intent(stop),PendingIntent.FLAG_UPDATE_CURRENT);
+    public void buildNotification() {
+        String stop = "stop";
+        registerReceiver(stopReciever, new IntentFilter(stop));
+        PendingIntent broadcastIntent = PendingIntent.getBroadcast(this, 0, new Intent(stop), PendingIntent.FLAG_UPDATE_CURRENT);
         //make a persistent notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this).setContentTitle(getString(R.string.app_name)).setContentText(getString(R.string.notification_text)).setOngoing(true
         ).setContentIntent(broadcastIntent).setSmallIcon(R.drawable.ic_tracker);
-        startForeground(1,builder.build());
+        startForeground(1, builder.build());
     }
 
     public void publishcurrentLocation(String lat, String lng) {
