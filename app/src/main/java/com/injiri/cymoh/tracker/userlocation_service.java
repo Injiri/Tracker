@@ -87,6 +87,7 @@ public class userlocation_service extends Service implements GoogleApiClient.Con
         intent.putExtra(USER_LATITUDE, lat);
         intent.putExtra(USER_LONGITUDE, lng);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
     }
 
     @Override
