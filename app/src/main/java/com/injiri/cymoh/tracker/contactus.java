@@ -78,13 +78,10 @@ public class contactus extends Fragment implements OnMapReadyCallback {
     private DatabaseReference databaseReference = firebaseDatabase.getReference("Accounts/val-235353");
     Boolean mapReady = false;
 
-    public contactus() {
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //        initialize(); //initializes the firebase database with default devices.
+                initialize(); //initializes the firebase database with default devices.
         // Inflate the layout for this fragment
 
         View contactus_view = inflater.inflate(R.layout.fragment_contactus, container, false);

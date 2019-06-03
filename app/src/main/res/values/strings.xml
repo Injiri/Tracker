@@ -11,7 +11,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="notification_text">tracking,tap to stop.</string>
-    <string name="rationale_permission">Please grant location permission to start the service</string>
+    <string name="rationale_permission">Please grant location permission to start GPS service</string>
     <string name="deniedpermission_exp">location permission denied.</string>
     <string name="settings">settings</string>
     <string name="device_spinner">select a device</string>
