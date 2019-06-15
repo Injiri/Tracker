@@ -60,9 +60,6 @@ public class MainActivity extends AppCompatActivity
         }, new IntentFilter(userlocation_service.LOCATION_BROADCAST_ACTION));
 
 
-
-
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -209,6 +206,7 @@ public class MainActivity extends AppCompatActivity
     public boolean permission_granted() {
         int state1 = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         int state2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
 
         return state1 == PackageManager.PERMISSION_GRANTED && state2 == PackageManager.PERMISSION_GRANTED;
 

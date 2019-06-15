@@ -204,15 +204,14 @@ public class contactus extends Fragment implements OnMapReadyCallback {
 
 
                     map.addMarker(new MarkerOptions().position(device_latlng).title("device "));
-                    Marker mark = map.addMarker(new MarkerOptions().position(device_latlng).title("device "));
+                    Marker mark = map.addMarker(new MarkerOptions().position(device_latlng).
+                            title("device "));
 
                     markers.put(selectedDevice.getDeviceId(), mark);
 
 
                     map.moveCamera(CameraUpdateFactory.newLatLng(user_latlng));
-                    map.animateCamera(CameraUpdateFactory.zoomTo(14
-
-                    ));
+                    map.animateCamera(CameraUpdateFactory.zoomTo(14));
                     String last_update = selectedDevice.getLastupdated();
                     double distance = distance(userLocation, deviceLocation);
 
