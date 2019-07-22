@@ -68,7 +68,7 @@ public class contactus extends Fragment implements OnMapReadyCallback {
     ArrayList<Device> devicesArray = new ArrayList<Device>();
     ArrayList<String> spinnerDevices = new ArrayList<String>();
     Device selectedDevice;
-
+    ArrayAdapter dataAdapter;
 
     private HashMap<String, Marker> markers = new HashMap<String, Marker>();
     TextView deviceNameTxt, deviceId, lastFix, deviceLocated;
@@ -81,11 +81,32 @@ public class contactus extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-                initialize(); //initializes the firebase database with default devices.
+        initialize(); //initializes the firebase database with default devices.
         // Inflate the layout for this fragment
 
         View contactus_view = inflater.inflate(R.layout.fragment_contactus, container, false);
+        dataAdapter = new ArrayAdapter(this.getActivity(), simple_spinner_item, spinnerDevices);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
+        devicesSpinner.setAdapter(dataAdapter);
+        devicesSpinner.setVisibility(View.VISIBLE);
+        devicesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                selectedDevice = devicesArray.get(position);
+                update_mapui(selectedDevice);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+                // sometimes you need nothing here
+            }
+        });
+
         return contactus_view;
+
+
     }
 
     @Override
@@ -110,6 +131,8 @@ public class contactus extends Fragment implements OnMapReadyCallback {
                         selectedDevice = devicesArray.get(0);
                         update_mapui(selectedDevice);
                     }
+                    dataAdapter.notifyDataSetChanged();
+
 
                 }
             }
@@ -117,25 +140,6 @@ public class contactus extends Fragment implements OnMapReadyCallback {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(getActivity(), "Something fishy happened! Sorry for the inconvenience!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ArrayAdapter dataAdapter = new ArrayAdapter(this.getActivity(), simple_spinner_item, spinnerDevices);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_selectable_list_item);
-        devicesSpinner.setAdapter(dataAdapter);
-        devicesSpinner.setVisibility(View.VISIBLE);
-        devicesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                selectedDevice = devicesArray.get(position);
-                update_mapui(selectedDevice);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-                // sometimes you need nothing here
             }
         });
 
